@@ -1,0 +1,15 @@
+*.class
+*.pdb
+**/target
+**/classes
+
+
+## eclipse
+*.classpath
+*.project
+**/.settings
+**/.externalToolBuilders
+
+## idea
+*.iml
+**/.idea

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <bean class="osky.web.spring.ExceptionResolver">
+        <property name="defaultErrorRoot" value="/error/"/>
+        <property name="defaultErrorSets" value="404"/>
+        <property name="defaultErrorView" value="default.html"/>
+    </bean>
+
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="osky.web.spring.FastJsonHttpMessageConverter"/>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <!-- shiro start -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <property name="successUrl" value="/job.html"/>
+        <property name="loginUrl" value="/login.html"/>
+        <property name="unauthorizedUrl" value="/error.html"/>
+        <property name="filters">
+            <map>
+                <entry key="authc" value-ref="authenticationFilter"></entry>
+            </map>
+        </property>
+        <property name="filterChainDefinitions">
+            <value>
+                /**=authc
+            </value>
+        </property>
+    </bean>
+
+    <bean id="authenticationFilter" class="osky.web.shiro.AuthenticationFilter"/>
+    <bean id="authenticationRealm" class="osky.web.shiro.AuthenticationRealm"/>
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="authenticationRealm"/>
+    </bean>
+    <!-- shiro end -->
+
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="5120000"/>
+    </bean>
+
+    <bean class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basenames" value="i18n"/>
+    </bean>
+</beans>
